@@ -1,12 +1,17 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import {Formik, Form, Field, ErrorMessage } from 'formik'
 import { AtmObject } from '../App'
 import { useHistory } from "react-router-dom";
 import Card from 'react-bootstrap/Card'
+import openeye from '../openeye.png'
+import closedeye from '../closedeye.png'
 
 function CreateAccount() {
     const atmObject = useContext(AtmObject);
     const { accounts, setAccounts, setSelectedDiv} = atmObject
+
+    const [showPw, setShowPw] = useState(false)
+    const [showVerPw, setShowVerPw] = useState(false)
 
     const history = useHistory();
 
@@ -18,6 +23,16 @@ function CreateAccount() {
         verifyPassword: ""
     }
 
+    const showHidden = (e)=>{
+        setShowPw(!showPw)
+        showPw ? e.target.innerHTML = 'Show' : e.target.innerHTML = "Hide"
+    }
+
+    const showVerHidden = (e)=>{
+        setShowVerPw(!showVerPw)
+        showVerPw ? e.target.innerHTML = 'Show' : e.target.innerHTML = "Hide"
+    }
+    
     const onSubmit = (values)=>{
         console.log('values:',values)
         setAccounts(accounts,accounts[values.username] = {email: values.email, name: values.name, password:values.password, accountBalance: 0, accountHistory:[]});
@@ -49,8 +64,8 @@ function CreateAccount() {
         } 
         if(!values.password) {
             errors.password = 'Required'
-        }else if(values.password.length < 8) {
-            errors.password = "Password must be 8 or More Characters"
+        }else if(!/^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/.test(values.password)) {
+            errors.password = "Password must contain at least 8 characters, one uppercase, one number and one special character"
         }
         if(!values.password) {
             errors.verifyPassword = 'Required'
@@ -85,11 +100,11 @@ function CreateAccount() {
                                     <div className= "error"><ErrorMessage name = 'email'/></div>
                                 </div>
                                 <div className= "field-div">
-                                    <Field id = "create-password" name="password" type='input' placeholder="Create Password" ></Field>
+                                    <Field id = "create-password" name="password" type={showPw ? 'text' : 'password'} placeholder="Create Password" ></Field><div id = "showPassSpan" type="button" onClick={showHidden}>Show</div>
                                     <div className= "error"><ErrorMessage name = 'password'/></div>
                                 </div>
                                 <div className= "field-div">
-                                    <Field id = "create-verify" name="verifyPassword" type='input' placeholder="Verify Password"></Field>
+                                    <Field id = "create-verify" name="verifyPassword" type={showVerPw ? 'text' : 'password'} placeholder="Verify Password"></Field><span id = "showPassVerSpan" type="button" onClick={showVerHidden}>Show</span>
                                     <div className= "error"><ErrorMessage name = 'verifyPassword'/></div>
                                 </div>
                                 <button id= "create-submit" className="submit-btn" type="submit" disabled = {!(formik.dirty && formik.isValid)}>Submit</button>

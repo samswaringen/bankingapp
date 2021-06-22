@@ -305,11 +305,17 @@ button {
   transition: .2s .1s;
 }
 .field-div {
-  height:50px;;
+  height:50px;
+  
 }
 .error {
   color:red;
-  font-size: 13px;;
+  font-size: 13px;
+  width: 600px;
+}
+.error-signin {
+  color:red;
+  font-size: 13px;
 }
 .nav-item a:hover {
   text-decoration: none;
@@ -405,5 +411,24 @@ button {
 #quickcash-div {
   position: relative;
   top:-15px;
+}
+#showPassSpan {
+  position: absolute;
+  left:390px;
+  top: 223px;
+  width: 40px;
+  font-size: 11px;
+}
+#showPassVerSpan {
+  position: absolute;
+  left: 395px;
+  top: 273px;
+  font-size: 11px;
+}
+#showPassSignin {
+  position: absolute;
+  font-size: 11px;
+  top: 110px;
+  left: 228px;
 }
 

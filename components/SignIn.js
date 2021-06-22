@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {Formik, Form, Field, ErrorMessage } from 'formik'
 import { AtmObject } from '../App'
 import Card from 'react-bootstrap/Card'
@@ -8,9 +8,16 @@ import Card from 'react-bootstrap/Card'
 const SignIn = ()=> {
     const atmObject = useContext(AtmObject);
     const { setIsVerified, accounts, setUser, setSelectedDiv, setSelected} = atmObject
-    
 
+    const [showPw, setShowPw] = useState(false)
+
+    const showHidden = (e)=>{
+        setShowPw(!showPw)
+        showPw ? e.target.innerHTML = 'Show' : e.target.innerHTML = "Hide"
+    }
+    
     const initialValues = {username: "", password: ""}
+
     const onSubmit = (values)=>{
         console.log('values:',values);
         setUser(values.username);
@@ -43,20 +50,26 @@ const SignIn = ()=> {
                 onSubmit = {onSubmit}
                 validate = {validate}
                 >
-                <div id="sign-in">
-                    <h3>Sign In</h3>
-                    <Form>
-                        <div className= "field-div">
-                            <Field name="username" type='input' placeholder="Enter Username"></Field>
-                            <div className= "error"><ErrorMessage name="username" /></div>
-                        </div>
-                        <div className= "field-div">
-                            <Field name="password" type='input' placeholder="Enter Password"></Field>
-                            <div className= "error"><ErrorMessage name="password" /></div>
-                        </div>
-                        <button className="submit-btn" type="submit">Submit</button>
-                    </Form>
-                </div>
+                {
+                    formik =>{
+                        return (    
+                            <div id="sign-in">
+                                <h3>Sign In</h3>
+                                <Form>
+                                    <div className= "field-div">
+                                        <Field name="username" type='input' placeholder="Enter Username"></Field>
+                                        <div className= "error-signin"><ErrorMessage name="username" /></div>
+                                    </div>
+                                    <div className= "field-div">
+                                        <Field name="password" type={showPw ? 'text' : 'password'} placeholder="Enter Password"></Field><div id = "showPassSignin" type="button" onClick={showHidden}>Show</div>
+                                        <div className= "error-signin"><ErrorMessage name="password" /></div>
+                                    </div>
+                                    <button className="submit-btn" type="submit" disabled = {!(formik.dirty && formik.isValid)}>Submit</button>
+                                </Form>
+                            </div>
+                        )
+                    }
+                }
             </Formik>
         </Card>
     )
